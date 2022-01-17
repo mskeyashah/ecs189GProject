@@ -20,9 +20,9 @@ import numpy as np
 class Method_MLP(method, nn.Module):
     data = None
     # it defines the max rounds to train the model
-    max_epoch = 200
+    max_epoch = 100
     # it defines the learning rate for gradient descent based optimizer for model learning
-    learning_rate = 0.03
+    learning_rate = 0.02
 
     # it defines the the MLP model architecture, e.g.,
     # how many layers, size of variables in each layer, activation function, etc.
@@ -90,7 +90,6 @@ class Method_MLP(method, nn.Module):
         recall_evaluator = Evaluate_Recall(' ', '')
         f1_evaluator = Evaluate_F1(' ', '')
         loss = []
-
         # it will be an iterative gradient updating process
         # we don't do mini-batch, we use the whole input as one batch
         # you can try to split X and y into smaller-sized batches by yourself
@@ -109,19 +108,19 @@ class Method_MLP(method, nn.Module):
             # update the variables according to the optimizer and the gradients calculated by the above loss.backward function
             optimizer.step()
 
-            #if epoch%100 == 0:
-            accuracy_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
-            precision_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
-            recall_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
-            f1_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+            if epoch%10 == 0:
+                accuracy_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+                precision_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+                recall_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+                f1_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
 
-            print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:', precision_evaluator.evaluate(), 'Recall:', recall_evaluator.evaluate(), 'F1:', f1_evaluator.evaluate(), 'Loss:', train_loss.item())
+                print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:', precision_evaluator.evaluate(), 'Recall:', recall_evaluator.evaluate(), 'F1:', f1_evaluator.evaluate(), 'Loss:', train_loss.item())
             loss.append(train_loss.item())
         pyplot.plot(loss)
         pyplot.xlabel('Epochs')
         pyplot.ylabel('Loss Value')
         pyplot.title('Epochs vs. Loss')
-        pyplot.savefig('loss_plot.png')
+        pyplot.savefig('../../result/stage_2_result/loss_plot'+self.method_name+'.png')
 
     def test(self, X):
         # do the testing, and result the result

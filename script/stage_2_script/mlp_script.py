@@ -19,7 +19,7 @@ if 1:
     data_obj.dataset_source_folder_path = '../../data/stage_2_data/'
     data_obj.dataset_source_file_name = 'train.csv'
 
-    method_obj = Method_MLP('multi-layer perceptron', '')
+    method_obj = Method_MLP('multi-layer_perceptron', '')
 
     result_obj = Result_Saver('saver', '')
     result_obj.result_destination_folder_path = '../../result/stage_2_result/MLP_'
@@ -31,14 +31,21 @@ if 1:
     # ------------------------------------------------------
 
     # ---- running section ---------------------------------
-    print('************ Start ************')
+    print('************ Start Original Model ************')
     setting_obj.prepare(data_obj, method_obj, result_obj, evaluate_obj)
     setting_obj.print_setup_summary()
     mean_score, std_score = setting_obj.load_run_save_evaluate()
     print('************ Overall Performance ************')
     print('MLP Accuracy: ' + str(mean_score) + ' +/- ' + str(std_score))
-    print('************ Finish ************')
+    print('************ Finish Original Model ************')
     # ------------------------------------------------------
-    
 
-    
+    method_obj = Method_MLP_Changed('multi-layer_perceptron_changed_model', '')
+
+    print('************ Start Changed Model ************')
+    setting_obj.prepare(data_obj, method_obj, result_obj, evaluate_obj)
+    setting_obj.print_setup_summary()
+    mean_score, std_score = setting_obj.load_run_save_evaluate()
+    print('************ Overall Performance ************')
+    print('MLP Changed Model Accuracy: ' + str(mean_score) + ' +/- ' + str(std_score))
+    print('************ Finish Changed Model ************')

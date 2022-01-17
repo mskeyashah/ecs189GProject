@@ -31,6 +31,7 @@ class Setting_Train_Test_Split(setting):
             
         # save raw ResultModule
         self.result.data = learned_result
+        self.result.result_destination_file_name = self.method.method_name+'prediction_result'
         self.result.save()
             
         self.evaluate.data = learned_result
