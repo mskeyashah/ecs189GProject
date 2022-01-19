@@ -20,9 +20,9 @@ import numpy as np
 class Method_MLP(method, nn.Module):
     data = None
     # it defines the max rounds to train the model
-    max_epoch = 100
+    max_epoch = 150
     # it defines the learning rate for gradient descent based optimizer for model learning
-    learning_rate = 0.02
+    learning_rate = 0.01
 
     # it defines the the MLP model architecture, e.g.,
     # how many layers, size of variables in each layer, activation function, etc.
@@ -40,18 +40,15 @@ class Method_MLP(method, nn.Module):
         self.fc_layer_3 = nn.Linear(500, 400)
 
         self.activation_func_3 = nn.ReLU()
-        self.fc_layer_4 = nn.Linear(400, 300)
+        self.fc_layer_4 = nn.Linear(400, 200)
 
         self.activation_func_4 = nn.ReLU()
-        self.fc_layer_5 = nn.Linear(300, 200)
+        self.fc_layer_5 = nn.Linear(200, 100)
 
         self.activation_func_5 = nn.ReLU()
-        self.fc_layer_6 = nn.Linear(200, 100)
-
-        self.activation_func_6 = nn.ReLU()
-        self.fc_layer_7 = nn.Linear(100, 10)
+        self.fc_layer_6 = nn.Linear(100, 10)
         # check here for nn.Softmax doc: https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html
-        self.activation_func_7 = nn.Softmax(dim=1)
+        self.activation_func_6 = nn.Softmax(dim=1)
 
     # it defines the forward propagation function for input x
     # this function will calculate the output layer by layer
@@ -66,12 +63,11 @@ class Method_MLP(method, nn.Module):
         b = self.activation_func_4(self.fc_layer_4(h))
 
         h = self.activation_func_5(self.fc_layer_5(b))
-        b = self.activation_func_6(self.fc_layer_6(h))
         # outout layer result
         # self.fc_layer_2(h) will be a nx2 tensor
         # n (denotes the input instance number): 0th dimension; 2 (denotes the class number): 1st dimension
         # we do softmax along dim=1 to get the normalized classification probability distributions for each instance
-        y_pred = self.activation_func_7(self.fc_layer_7(b))
+        y_pred = self.activation_func_6(self.fc_layer_6(h))
         return y_pred
 
     # backward error propagation will be implemented by pytorch automatically
@@ -93,7 +89,7 @@ class Method_MLP(method, nn.Module):
         # it will be an iterative gradient updating process
         # we don't do mini-batch, we use the whole input as one batch
         # you can try to split X and y into smaller-sized batches by yourself
-        for epoch in range(self.max_epoch): # you can do an early stop if self.max_epoch is too much...
+        for epoch in range(self.max_epoch):  # you can do an early stop if self.max_epoch is too much...
             # get the output, we need to covert X into torch.tensor so pytorch algorithm can operate on it
             y_pred = self.forward(torch.FloatTensor(np.array(X)))
             # convert y to torch.tensor as well
@@ -114,13 +110,16 @@ class Method_MLP(method, nn.Module):
                 recall_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
                 f1_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
 
-                print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:', precision_evaluator.evaluate(), 'Recall:', recall_evaluator.evaluate(), 'F1:', f1_evaluator.evaluate(), 'Loss:', train_loss.item())
+                print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:',
+                    precision_evaluator.evaluate(), 'Recall:', recall_evaluator.evaluate(), 'F1:',
+                    f1_evaluator.evaluate(), 'Loss:', train_loss.item())
             loss.append(train_loss.item())
         pyplot.plot(loss)
         pyplot.xlabel('Epochs')
         pyplot.ylabel('Loss Value')
         pyplot.title('Epochs vs. Loss')
         pyplot.savefig('../../result/stage_2_result/loss_plot'+self.method_name+'.png')
+        pyplot.clf()
 
     def test(self, X):
         # do the testing, and result the result
@@ -128,7 +127,7 @@ class Method_MLP(method, nn.Module):
         # convert the probability distributions to the corresponding labels
         # instances will get the labels corresponding to the largest probability
         return y_pred.max(1)[1]
-    
+
     def run(self):
         print('--start training...')
         self.train(self.data['train']['X'], self.data['train']['y'])
@@ -148,4 +147,3 @@ class Method_MLP(method, nn.Module):
         print('Accuracy:', accuracy_evaluator.evaluate(), 'Precision:', precision_evaluator.evaluate(),
               'Recall:', recall_evaluator.evaluate(), 'F1:', f1_evaluator.evaluate())
         return {'pred_y': pred_y, 'true_y': self.data['test']['y']}
-            
