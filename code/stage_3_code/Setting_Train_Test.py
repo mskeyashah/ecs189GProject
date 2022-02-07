@@ -7,9 +7,6 @@ Concrete SettingModule class for a specific experimental SettingModule
 
 from code.stage_3_code.Dataset_Loader import Dataset_Loader
 from code.base_class.setting import setting
-import numpy as np
-import pickle
-import matplotlib.pyplot as plt
 
 
 class Setting_Train_Test_Split(setting):
@@ -30,24 +27,18 @@ class Setting_Train_Test_Split(setting):
             X_test.append(pair['image'])
             y_test.append(pair['label'])
 
-        for pair in loaded_data['train']:
-            # for pair in data['test']:
-            plt.imshow(pair['image'], cmap="Greys")
-            plt.show()
-            print(pair['label'])
 
         # run MethodModule
         self.method.data = {'train': {'X': X_train, 'y': y_train}, 'test': {'X': X_test, 'y': y_test}}
-      #  learned_result = self.method.run()
+        learned_result = self.method.run()
             
         # save raw ResultModule
-      #  self.result.data = learned_result
-      #  self.result.result_destination_file_name = self.method.method_name+'prediction_result'
-       # self.result.save()
+        self.result.data = learned_result
+        self.result.result_destination_file_name = self.method.method_name+'prediction_result'
+        self.result.save()
             
-       # self.evaluate.data = learned_result
+        self.evaluate.data = learned_result
         
-        #return self.evaluate.evaluate(), None
-        return
+        return self.evaluate.evaluate(), None
 
         
