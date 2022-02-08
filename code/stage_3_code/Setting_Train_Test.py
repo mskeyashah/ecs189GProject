@@ -5,7 +5,6 @@ Concrete SettingModule class for a specific experimental SettingModule
 # Copyright (c) 2017-Current Jiawei Zhang <jiawei@ifmlab.org>
 # License: TBD
 
-from code.stage_3_code.Dataset_Loader import Dataset_Loader
 from code.base_class.setting import setting
 
 
@@ -26,7 +25,6 @@ class Setting_Train_Test_Split(setting):
         for pair in loaded_data['test']:
             X_test.append(pair['image'])
             y_test.append(pair['label'])
-
 
         # run MethodModule
         self.method.data = {'train': {'X': X_train, 'y': y_train}, 'test': {'X': X_test, 'y': y_test}}

@@ -18,7 +18,6 @@ import torch
 from torch import nn
 import torch.optim as optim
 import numpy as np
-import torch.nn.functional as F
 
 
 class Method_CNN_CIFAR(method, nn.Module):

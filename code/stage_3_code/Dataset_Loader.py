@@ -7,8 +7,6 @@ Concrete IO class for a specific dataset
 
 from code.base_class.dataset import dataset
 import pickle
-import matplotlib.pyplot as plt
-
 
 
 class Dataset_Loader(dataset):

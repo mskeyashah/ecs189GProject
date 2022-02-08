@@ -18,10 +18,10 @@ import torch.optim as optim
 import numpy as np
 
 
-class Method_CNN_ORL(method, nn.Module):
+class Method_CNN_MNIST(method, nn.Module):
     data = None
     # it defines the max rounds to train the model
-    max_epoch = 50
+    max_epoch = 20
     # it defines the learning rate for gradient descent based optimizer for model learning
     learning_rate = 0.01
 
@@ -31,43 +31,28 @@ class Method_CNN_ORL(method, nn.Module):
     def __init__(self, mName, mDescription):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
-        self.cnn1 = nn.Sequential(
-            nn.ReflectionPad2d(1),
-            nn.Conv2d(112, 4, kernel_size=(3,3)),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(4),
+        self.layer1 = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=(5,5)),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=(2,2)))
 
-            nn.ReflectionPad2d(1),
-            nn.Conv2d(4, 8, kernel_size=(3,3)),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(8),
+        self.layer2 = nn.Sequential(
+            nn.Conv2d(32, 64, kernel_size=(5,5)),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2))
 
-            nn.ReflectionPad2d(1),
-            nn.Conv2d(8, 8, kernel_size=(3,3)),
-            nn.ReLU(inplace=True),
-            nn.BatchNorm2d(8),
-
-        )
-
-        self.fc1 = nn.Sequential(
-            nn.Linear(2208, 500),
-            nn.ReLU(inplace=True),
-
-            nn.Linear(500, 500),
-            nn.ReLU(inplace=True),
-
-            nn.Linear(500, 5))
-
+        self.fc1 = nn.Linear(4 * 4 * 64, 10)
 
     # it defines the forward propagation function for input x
     # this function will calculate the output layer by layer
 
     def forward(self, x):
         '''Forward propagation'''
-        output = self.cnn1(x)
-        output = output.view(output.size()[0], -1)
-        output = self.fc1(output)
-        return output
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = x.reshape(x.size(0), -1)
+        x = self.fc1(x)
+        return x
 
     # backward error propagation will be implemented by pytorch automatically
     # so we don't need to define the error backpropagation function here
@@ -86,14 +71,17 @@ class Method_CNN_ORL(method, nn.Module):
         f1_evaluator = Evaluate_F1(' ', '')
         loss = []
         # it will be an iterative gradient updating process
+        X = np.array(X)
+        X = np.expand_dims(X, 1)
+        X = torch.FloatTensor(X)
 
-        print('starting')
         for epoch in range(self.max_epoch):  # you can do an early stop if self.max_epoch is too much...
             # get the output, we need to covert X into torch.tensor so pytorch algorithm can operate on it
-            y_pred = self.forward(torch.FloatTensor(np.array(X)))
+            y_pred = self.forward(X)
             # convert y to torch.tensor as well
             y_true =  torch.LongTensor(np.array(y))
             # calculate the training loss
+
             train_loss = loss_function(y_pred, y_true)
             optimizer.zero_grad()
             # check here for the loss.backward doc: https://pytorch.org/docs/stable/generated/torch.Tensor.backward.html
@@ -103,13 +91,13 @@ class Method_CNN_ORL(method, nn.Module):
             # update the variables according to the optimizer and the gradients calculated by the above loss.backward function
             optimizer.step()
 
-           # if epoch%10 == 0:
-            accuracy_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
-            precision_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
-            recall_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
-            f1_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+            if epoch%5 == 0:
+                accuracy_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+                precision_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+                recall_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
+                f1_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
 
-            print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:',
+                print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:',
                     precision_evaluator.evaluate(), 'Recall:', recall_evaluator.evaluate(), 'F1:',
                     f1_evaluator.evaluate(), 'Loss:', train_loss.item())
             loss.append(train_loss.item())
@@ -122,7 +110,10 @@ class Method_CNN_ORL(method, nn.Module):
 
     def test(self, X):
         # do the testing, and result the result
-        y_pred = self.forward(torch.FloatTensor(np.array(X)))
+        X = np.array(X)
+        X = np.expand_dims(X, 1)
+        X = torch.FloatTensor(X)
+        y_pred = self.forward(X)
         # convert the probability distributions to the corresponding labels
         # instances will get the labels corresponding to the largest probability
         return y_pred.max(1)[1]

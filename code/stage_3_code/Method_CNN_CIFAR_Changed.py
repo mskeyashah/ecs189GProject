@@ -4,9 +4,6 @@ Concrete MethodModule class for a specific learning MethodModule
 
 # Copyright (c) 2017-Current Jiawei Zhang <jiawei@ifmlab.org>
 # License: TBD
-from torch.nn import Sequential
-
-
 from code.base_class.method import method
 from code.stage_3_code.Evaluate_Accuracy import Evaluate_Accuracy
 from code.stage_3_code.Evaluate_Precision import Evaluate_Precision
@@ -18,7 +15,6 @@ import torch
 from torch import nn
 import torch.optim as optim
 import numpy as np
-import torch.nn.functional as F
 
 
 class Method_CNN_CIFAR_Changed(method, nn.Module):
