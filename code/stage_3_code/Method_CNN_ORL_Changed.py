@@ -18,12 +18,12 @@ import torch.optim as optim
 import numpy as np
 
 
-class Method_CNN_ORL(method, nn.Module):
+class Method_CNN_ORL_Changed(method, nn.Module):
     data = None
     # it defines the max rounds to train the model
-    max_epoch = 25
+    max_epoch = 50
     # it defines the learning rate for gradient descent based optimizer for model learning
-    learning_rate = 0.01
+    learning_rate = 0.001
 
     # it defines the the MLP model architecture, e.g.,
     # how many layers, size of variables in each layer, activation function, etc.
@@ -37,6 +37,10 @@ class Method_CNN_ORL(method, nn.Module):
             nn.BatchNorm2d(4),
 
             nn.Conv2d(4, 8, kernel_size=(1,1)),
+            nn.ReLU(inplace=True),
+            nn.BatchNorm2d(8),
+
+            nn.Conv2d(8, 8, kernel_size=(1, 1)),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(8),
 
@@ -100,7 +104,7 @@ class Method_CNN_ORL(method, nn.Module):
             # update the variables according to the optimizer and the gradients calculated by the above loss.backward function
             optimizer.step()
 
-            if epoch%5 == 0:
+            if epoch%10 == 0:
                 accuracy_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
                 precision_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
                 recall_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
