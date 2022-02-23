@@ -95,7 +95,7 @@ class Method_RNN_Text_Generation(method, nn.Module):
                 loss.backward()
                 optimizer.step()
 
-                if batch % 5 == 0:
+                if epoch % 5 == 0 and batch == 0:
                     accuracy_evaluator.data = {'true_y': y, 'pred_y': y_pred.max(1)[1]}
                     precision_evaluator.data = {'true_y': y, 'pred_y': y_pred.max(1)[1]}
                     recall_evaluator.data = {'true_y': y, 'pred_y': y_pred.max(1)[1]}
@@ -104,7 +104,7 @@ class Method_RNN_Text_Generation(method, nn.Module):
                     print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:',
                           precision_evaluator.evaluate(), 'Recall:', recall_evaluator.evaluate(), 'F1:',
                           f1_evaluator.evaluate(), 'Loss:', loss.item())
-                losslist.append(loss.item())
+                    losslist.append(loss.item())
         pyplot.plot(losslist)
         pyplot.xlabel('Epochs')
         pyplot.ylabel('Loss Value')

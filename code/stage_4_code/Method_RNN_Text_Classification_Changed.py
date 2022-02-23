@@ -74,7 +74,6 @@ class Method_RNN_Text_Classification_Changed(method, nn.Module):
         precision_evaluator = Evaluate_Precision(' ', '')
         recall_evaluator = Evaluate_Recall(' ', '')
         f1_evaluator = Evaluate_F1(' ', '')
-        loss = []
         # it will be an iterative gradient updating process
 
 
@@ -115,13 +114,7 @@ class Method_RNN_Text_Classification_Changed(method, nn.Module):
                 print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Precision:',
                     precision_evaluator.evaluate(), 'Recall:', recall_evaluator.evaluate(), 'F1:',
                     f1_evaluator.evaluate(), 'Loss:', train_loss.item())
-            loss.append(train_loss.item())
-        pyplot.plot(loss)
-        pyplot.xlabel('Epochs')
-        pyplot.ylabel('Loss Value')
-        pyplot.title('Epochs vs. Loss')
-        pyplot.savefig('../../result/stage_4_result/loss_plot'+self.method_name+'.png')
-        pyplot.clf()
+
 
     def test(self, X):
         # do the testing, and result the result
