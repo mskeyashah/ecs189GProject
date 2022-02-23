@@ -45,7 +45,7 @@ class Setting_Train_Test_Split(setting):
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
             self.dataset.dataset_source_file_name = filename
-            if count < 1000:
+            if count < 10:
                 loaded_data = self.dataset.load()
                 X_train.append(loaded_data)
                 y_train.append(1)
@@ -58,7 +58,7 @@ class Setting_Train_Test_Split(setting):
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
             self.dataset.dataset_source_file_name = filename
-            if count < 1000:
+            if count < 10:
                 loaded_data = self.dataset.load()
                 X_train.append(loaded_data)
                 y_train.append(0)
@@ -72,7 +72,7 @@ class Setting_Train_Test_Split(setting):
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
             self.dataset.dataset_source_file_name = filename
-            if count < 1000:
+            if count < 10:
                 loaded_data = self.dataset.load()
                 X_test.append(loaded_data)
                 y_test.append(1)
@@ -85,7 +85,7 @@ class Setting_Train_Test_Split(setting):
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
             self.dataset.dataset_source_file_name = filename
-            if count < 1000:
+            if count < 10:
                 loaded_data = self.dataset.load()
                 X_test.append(loaded_data)
                 y_test.append(0)

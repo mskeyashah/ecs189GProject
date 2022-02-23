@@ -18,15 +18,14 @@ import torch.optim as optim
 import numpy as np
 
 
-class Method_RNN_Text_Classification(method, nn.Module):
+class Method_RNN_Text_Classification_Changed(method, nn.Module):
     data = None
     vocab = None
     n_vocab = 0
-
     # it defines the max rounds to train the model
-    max_epoch = 20
+    max_epoch = 50
     # it defines the learning rate for gradient descent based optimizer for model learning
-    learning_rate = 0.01
+    learning_rate = 0.001
 
     # it defines the the MLP model architecture, e.g.,
     # how many layers, size of variables in each layer, activation function, etc.
@@ -35,8 +34,8 @@ class Method_RNN_Text_Classification(method, nn.Module):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
 
-        n_embed = 400
-        n_hidden = 512
+        n_embed = 500
+        n_hidden = 400
         n_output = 1  # 1 ("positive") or 0 ("negative")
         n_layers = 2
 
@@ -53,7 +52,7 @@ class Method_RNN_Text_Classification(method, nn.Module):
         embedded_words = self.embedding(x)  # (batch_size, seq_length, n_embed)
         lstm_out, h = self.lstm(embedded_words)  # (batch_size, seq_length, n_hidden)
         lstm_out = self.dropout(lstm_out)
-        lstm_out = lstm_out.contiguous().view(-1, 512)  # (batch_size*seq_length, n_hidden)
+        lstm_out = lstm_out.contiguous().view(-1, 400)  # (batch_size*seq_length, n_hidden)
         fc_out = self.fc(lstm_out)  # (batch_size*seq_length, n_output)
         sigmoid_out = self.sigmoid(fc_out)  # (batch_size*seq_length, n_output)
         sigmoid_out = sigmoid_out.view(len(x), -1)  # (batch_size, seq_length*n_output)
@@ -83,10 +82,10 @@ class Method_RNN_Text_Classification(method, nn.Module):
         reviews = []
 
         for review in encoded_reviews:
-            if len(review) >= 400:
-                reviews.append(review[:400])
+            if len(review) >= 500:
+                reviews.append(review[:500])
             else:
-                reviews.append([0] * (400 - len(review)) + review)
+                reviews.append([0] * (500 - len(review)) + review)
 
         encoded_reviews = np.array(reviews)
         X = torch.LongTensor(encoded_reviews)
@@ -130,10 +129,10 @@ class Method_RNN_Text_Classification(method, nn.Module):
         reviews = []
 
         for review in encoded_reviews:
-            if len(review) >= 400:
-                reviews.append(review[:400])
+            if len(review) >= 500:
+                reviews.append(review[:500])
             else:
-                reviews.append([0] * (400 - len(review)) + review)
+                reviews.append([0] * (500 - len(review)) + review)
 
         encoded_reviews = np.array(reviews)
         X = torch.LongTensor(encoded_reviews)
