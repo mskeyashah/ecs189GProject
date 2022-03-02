@@ -24,6 +24,9 @@ class Setting_Train_Test_Split(setting):
         elif dataset == 'citeseer':
             self.dataset.dataset_source_folder_path = '../../data/stage_5_data/citeseer/'
             self.dataset.ylabel = ['AI', 'Agents', 'DB', 'HCI', 'IR', 'ML']
+        else:
+            self.dataset.dataset_source_folder_path = '../../data/stage_5_data/pubmed/'
+            self.dataset.ylabel = [0,1,2]
 
         adj, features, y_train, y_test, train_mask, test_mask = self.dataset.load_data()
         # # run MethodModule

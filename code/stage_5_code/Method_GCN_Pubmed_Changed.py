@@ -32,13 +32,13 @@ def preprocess_adj(A):
     return np.dot(np.dot(D_hat_inv_sqrt, A_hat), D_hat_inv_sqrt)
 
 
-class Method_GCN_Citeseer(method, nn.Module):
+class Method_GCN_Pubmed_Changed(method, nn.Module):
     data = None
 
     # it defines the max rounds to train the model
     max_epoch = 200
     # it defines the learning rate for gradient descent based optimizer for model learning
-    learning_rate = 0.01
+    learning_rate = 0.005
 
     # it defines the the MLP model architecture, e.g.,
     # how many layers, size of variables in each layer, activation function, etc.
@@ -47,10 +47,10 @@ class Method_GCN_Citeseer(method, nn.Module):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
 
-        input_dim = 3703
-        hidden_dim = 16
-        num_classes = 6
-        p = 0.5
+        input_dim = 500
+        hidden_dim = 20
+        num_classes = 3
+        p = 0.7
 
         self.gcn_layer1 = nn.Linear(input_dim, hidden_dim)
         self.acti1 = nn.ReLU(inplace=True)

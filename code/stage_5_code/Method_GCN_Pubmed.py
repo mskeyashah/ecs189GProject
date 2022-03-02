@@ -32,7 +32,7 @@ def preprocess_adj(A):
     return np.dot(np.dot(D_hat_inv_sqrt, A_hat), D_hat_inv_sqrt)
 
 
-class Method_GCN_Citeseer(method, nn.Module):
+class Method_GCN_Pubmed(method, nn.Module):
     data = None
 
     # it defines the max rounds to train the model
@@ -47,9 +47,9 @@ class Method_GCN_Citeseer(method, nn.Module):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
 
-        input_dim = 3703
+        input_dim = 500
         hidden_dim = 16
-        num_classes = 6
+        num_classes = 3
         p = 0.5
 
         self.gcn_layer1 = nn.Linear(input_dim, hidden_dim)
