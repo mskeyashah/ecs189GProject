@@ -24,24 +24,23 @@ def sample_mask(idx, l):
     return np.array(mask, dtype=np.bool)
 
 
-class Dataset_Loader_Cora(dataset):
+class Dataset_Loader(dataset):
     data = None
     dataset_source_folder_path = None
     dataset_source_file_name = None
-    
+    ylabel = None
+
     def __init__(self, dName=None, dDescription=None):
         super().__init__(dName, dDescription)
 
     def load_data(self):
-        df = pd.read_csv('../../data/stage_5_data/cora/node', sep='\t', header=None).sort_index()
+        df = pd.read_csv(self.dataset_source_folder_path + 'node', sep='\t', header=None).sort_index()
         df = df.sort_values(by=df.columns[0])
         df.reset_index(drop=True)
         idx_train = []
         idx_test = []
-        ylabel = ["Case_Based", "Genetic_Algorithms", "Neural_Networks", "Probabilistic_Methods",
-                  "Reinforcement_Learning", "Rule_Learning", "Theory"]
-        for lab in ylabel:
-            testing = df[df[1434] == lab]
+        for lab in self.ylabel:
+            testing = df[df[len(df.columns) -1] == lab]
             idxlist = testing.sample(n=20).index.tolist()
             testing = testing.drop(idxlist)
             idx_train = idx_train + idxlist
@@ -50,7 +49,7 @@ class Dataset_Loader_Cora(dataset):
         ally = pd.get_dummies(df[df.columns[len(df.columns) - 1]])
         allx = df.drop(df.columns[len(df.columns) - 1], axis=1, inplace=False)
 
-        link = pd.read_csv('../../data/stage_5_data/cora/link', sep='\t', header=None, names=["to", "from"])
+        link = pd.read_csv(self.dataset_source_folder_path+'link', sep='\t', header=None, names=["to", "from"])
         link.set_index("from", inplace=True)
         link = link.sort_index()
         indexes = link.index

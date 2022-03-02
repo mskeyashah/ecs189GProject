@@ -16,7 +16,15 @@ import collections
 
 class Setting_Train_Test_Split(setting):
 
-    def load_run_save_evaluate(self):
+    def load_run_save_evaluate(self, dataset):
+        if dataset == 'cora':
+            self.dataset.dataset_source_folder_path = '../../data/stage_5_data/cora/'
+            self.dataset.ylabel = ["Case_Based", "Genetic_Algorithms", "Neural_Networks", "Probabilistic_Methods",
+                  "Reinforcement_Learning", "Rule_Learning", "Theory"]
+        elif dataset == 'citeseer':
+            self.dataset.dataset_source_folder_path = '../../data/stage_5_data/citeseer/'
+            self.dataset.ylabel = ['AI', 'Agents', 'DB', 'HCI', 'IR', 'ML']
+
         adj, features, y_train, y_test, train_mask, test_mask = self.dataset.load_data()
         # # run MethodModule
         self.method.data = {'adj': adj, 'features': features, 'y_train': y_train, 'y_test': y_test,'train_mask': train_mask, 'test_mask':test_mask}
